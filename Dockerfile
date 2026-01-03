@@ -2,7 +2,6 @@
 # Here we install developer tools and compile extensions
 FROM gaibz/ubuntu20-php7.4-nginx:latest AS builder
 
-LABEL maintainer="mrizkihidayat66"
 
 # Install build-time packages
 RUN apt-get update && \

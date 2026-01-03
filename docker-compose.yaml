@@ -7,10 +7,10 @@ services:
       PUID: 1000
       PGID: 1000
       TZ: Europe/Warsaw
-      MYSQL_ROOT_PASSWORD: your_root_password
+      MYSQL_ROOT_PASSWORD: YOUR_ROOT_DATABASE_PASSWORD
       MYSQL_DATABASE: filerun-db
       MYSQL_USER: filerun-user
-      MYSQL_PASSWORD: filerun-user-password
+      MYSQL_PASSWORD: YOUR_DATABASE_USER_PASSWORD
     volumes:
       - ./db:/config
 
