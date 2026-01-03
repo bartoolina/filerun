@@ -1,15 +1,18 @@
 services:
   db:
-    image: mariadb:10.5
-    container_name: filerun_mariadb
-    restart: always
+    image: lscr.io/linuxserver/mariadb:11.4.8
+    container_name: mariadb
     environment:
-      MYSQL_ROOT_PASSWORD: YOUR_DATABASE_ROOT_PASSWORD
-      MYSQL_USER: filerun-user
-      MYSQL_PASSWORD: YOUR_DATABASE_USER_PASSWORD
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Warsaw
+      MYSQL_ROOT_PASSWORD: your_root_password
       MYSQL_DATABASE: filerun-db
+      MYSQL_USER: filerun-user
+      MYSQL_PASSWORD: filerun-user-password
     volumes:
-      - ./db:/var/lib/mysql
+      - ./db:/config
+    restart: unless-stopped
 
   web:
     build: .
