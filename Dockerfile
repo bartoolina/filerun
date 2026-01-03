@@ -1,87 +1,78 @@
-# Use the base image
-FROM gaibz/ubuntu20-php7.4-nginx:latest
+# ETAP 1: Budowniczy (Builder)
+# Tutaj instalujemy narzędzia deweloperskie i kompilujemy rozszerzenia
+FROM gaibz/ubuntu20-php7.4-nginx:latest AS builder
 
-# Set label
 LABEL maintainer="mrizkihidayat66"
 
-# Set non-interactive mode for apt-get
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install necessary packages
-RUN \
-    echo "**** install build packages ****" && \
-    apt-get update && \
+# Zainstaluj pakiety potrzebne do budowy
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
-        git \
-        unzip \
-        build-essential && \
-    \
-    echo "**** install runtime packages ****" && \
+        build-essential \
+        libmagickwand-dev \
+        php-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Zainstaluj i skompiluj Imagick
+RUN cd /tmp && \
+    curl -o imagick.tgz -L http://pecl.php.net/get/imagick-3.4.4.tgz && \
+    tar xvzf imagick.tgz && \
+    cd imagick-3.4.4 && \
+    phpize && ./configure && make && make install
+
+# Pobierz IonCube
+RUN cd /tmp && \
+    curl -o ioncube.tar.gz -L http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
+    tar xvfz ioncube.tar.gz
+
+# ---
+# ETAP 2: Obraz finalny (Produkcyjny)
+# Zaczynamy od nowa, od czystego obrazu. Instalujemy tylko potrzebne zależności.
+FROM gaibz/ubuntu20-php7.4-nginx:latest
+
+# Zmienne PUID i PGID z docker-compose.yaml
+ARG PUID=1000
+ARG PGID=1000
+ENV PUID=${PUID}
+ENV PGID=${PGID}
+
+# Zainstaluj pakiety potrzebne do działania aplikacji (bez dev)
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ffmpeg \
-        pkg-config \
-        libmagickwand-dev \
         mariadb-client \
-        php-dev \
-        php7.4 \
-        php7.4-common \
-        php7.4-curl \
-        php7.4-gd \
-        php7.4-json \
-        php7.4-mbstring \
-        php7.4-opcache \
-        php7.4-mysql \
-        php7.4-xml \
-        php7.4-zip && \
+        libmagickwand-6.q16-6 && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Imagick extension
-RUN \
-    echo "**** install imagick ****" && \
-    curl -o /tmp/imagick.tgz -L http://pecl.php.net/get/imagick-3.4.4.tgz && \
-    tar xvzf /tmp/imagick.tgz -C /tmp && \
-    cd /tmp/imagick-3.4.4 && \
-    phpize && ./configure && make install && \
-    echo "extension=imagick.so" >> /etc/php/7.4/cli/php.ini && \
-    echo "" >> /etc/php/7.4/fpm/php.ini && \
-    echo "extension=imagick.so" >> /etc/php/7.4/fpm/php.ini && \
-    rm -rf /tmp/*
+# Kopiuj skompilowane rozszerzenia z etapu "builder"
+COPY --from=builder /usr/lib/php/20190902/imagick.so /usr/lib/php/20190902/imagick.so
+COPY --from=builder /tmp/ioncube/ioncube_loader_lin_7.4.so /usr/lib/php/20190902/ioncube_loader_lin_7.4.so
 
-# Install IonCube
-RUN \
-    echo "**** install ioncube ****" && \
-    curl -o /tmp/ioncube.tar.gz -L http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && \
-    tar xvfz /tmp/ioncube.tar.gz -C /tmp && \
-    cp "/tmp/ioncube/ioncube_loader_lin_7.4.so" /usr/lib/php/20190902/ && \
-    echo "zend_extension=ioncube_loader_lin_7.4.so" >> /etc/php/7.4/fpm/conf.d/00_ioncube_loader_lin_7.4.ini && \
-    rm -rf /tmp/*
+# Włącz rozszerzenia PHP
+RUN echo "extension=imagick.so" > /etc/php/7.4/fpm/conf.d/20-imagick.ini && \
+    echo "zend_extension=ioncube_loader_lin_7.4.so" > /etc/php/7.4/fpm/conf.d/00-ioncube.ini
 
-# Copy FileRun (local zip instead of download)
-COPY FileRun_20220519_PHP73-74.zip /tmp/filerun.zip
-RUN \
-    echo "**** install filerun ****" && \
-    mkdir -p /var/www/html && \
-    unzip /tmp/filerun.zip -d /var/www/html && \
-    rm /tmp/filerun.zip
+# Kopiuj kod aplikacji z lokalnego folderu src
+COPY src/ /var/www/html/
 
-# Copy configs
+# Kopiuj pliki konfiguracyjne
 COPY default /etc/nginx/sites-available/
 COPY filerun-optimization.ini /etc/php/7.4/fpm/conf.d/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Prepare volumes
-RUN mkdir -p /config /user-files /config/keys && \
+# Przygotuj woluminy i dowiązania
+RUN mkdir -p /config /user-files && \
     rm -f /etc/nginx/sites-enabled/default.conf && \
     ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default.conf && \
-    ln -sf /config/config.php /var/www/html/system/data/autoconfig.php && \
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-        -keyout /config/keys/cert.key -out /config/keys/cert.crt \
-        -subj "/C=US/ST=State/L=City/O=Organization/OU=Department/CN=example.com/emailAddress=email@example.com" && \
-    chown -R www-data:www-data /var/www/html /config /user-files /config/keys && \
-    chmod 644 /config/keys/cert.*
+    ln -sf /config/config.php /var/www/html/system/data/autoconfig.php
+
+# Kopiuj i ustaw uprawnienia dla skryptu startowego
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 VOLUME ["/config", "/user-files"]
-
 EXPOSE 80
+
+# Uruchom skrypt startowy, który następnie uruchomi supervisord
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
