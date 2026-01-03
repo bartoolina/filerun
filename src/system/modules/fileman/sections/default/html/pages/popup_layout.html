@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title>{$app.name|forHTML}</title>
+	{insertFavIconLink}
+	{insertCSSLink basic=1 fa=1 ext=1}
+	{insertJSScript scripts=['ext']}
+	<script>
+	var URLRoot = '{$app.url.root}';
+	</script>
+	{if $app.headerContent}{include file=$contentTemplateFile}{/if}
+</head>
+
+<body id="theBODY" class="popup">
+{if !$app.headerContent}{include file=$contentTemplateFile}{/if}
+</body>
+</html>

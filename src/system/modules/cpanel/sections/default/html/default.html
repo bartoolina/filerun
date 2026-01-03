@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>{$app.settings.app_title} :: {t s="Main Interface"}Control Panel{/t}</title>
+	{insertFavIconLink}
+	{insertCSSLink basic=1 fa=1 ext=1 cpanel=1}
+</head>
+<body>
+<div id="loadMsg"><div>{t}Loading...{/t}</div></div>
+{if $app.settings.pushercom_enable}
+	<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+{/if}
+{insertJSScript scripts=['ext', 'cpanel']}
+<script src="?module=fileman&section=utils&sec=Admin&lang={$app.language|forURL}&v={$app.settings.currentVersion|forURL}&page=translation.js"></script>
+<script>
+FR.URLRoot = '{$app.url.root}';
+FR.iconURL = '{$app.url.root}/images/icons/';
+FR.system = {$app.system};
+FR.user = {$app.adminInfo};
+{if !$app.config.misc.developmentMode}
+FR.checkUpdatesURL = 'https://filerun.com/version_check/{$app.settings.currentVersion|forURL}{if $app.isFree}/f{/if}?h={$config.url.root|forURL|safeJS}';
+{/if}
+</script>
+</body>
+</html>

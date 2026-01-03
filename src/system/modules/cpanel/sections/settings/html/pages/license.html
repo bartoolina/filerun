@@ -1,0 +1,10 @@
+{lang section="Admin: Licensing"}
+<script>
+	var licenseInfo = {$app.licenseInfo};
+	FR.system.isFree = (licenseInfo.version == 'Free');
+	var userEmail = '{$app.userEmail|safeHTML|safeJS}';
+ScriptMgr.load({ scripts:[
+	'?module=fileman&section=utils&sec=Admin%3A%20Licensing&lang={$app.language|forURL}&v={$app.settings.currentVersion|forURL}&page=translation.js',
+	'js/min/cpanel/licensing.js?v={$app.settings.currentVersion|forURL}'
+]});
+</script>

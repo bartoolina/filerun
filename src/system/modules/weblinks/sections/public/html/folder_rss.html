@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<atom:link href="{$app.linkInfo.url|safeHTML}" rel="self" type="application/rss+xml" />
+		<title>{if $app.breadCrumbs}{foreach key=key from=$app.breadCrumbs item=breadCrumb}{if $key > 0 && $key < count($app.breadCrumbs)} &amp;raquo; {/if}{$breadCrumb.title|forHTML|safeHTML|safeXML}{/foreach}{else}{/if}</title>
+		<description>{$app.folderName|forHTML|safeHTML|safeXML}</description>
+		<link>{$app.linkInfo.url|safeHTML}</link>
+{foreach from=$app.list item=item}
+		<item>
+			<guid isPermaLink="false">{$app.md5url}:{$item.pid}</guid>
+			<title>{$item.fileName|forHTML|safeHTML|safeXML}</title>
+			<link>{$item.url|safeHTML}</link>
+			<pubDate>{$item.pubDate}</pubDate>
+			<description>{$item.niceFileSize}</description>
+		</item>
+{/foreach}
+	</channel>
+</rss>

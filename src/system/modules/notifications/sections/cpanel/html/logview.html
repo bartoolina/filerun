@@ -1,0 +1,13 @@
+<div id="logData">
+	{if $app.entry.data.errors}<div style="margin-bottom:10px;border-bottom:1px solid var(--hBCol);padding:15px">{$app.entry.data.errors}</div>{/if}
+	<div style="padding:15px">{$app.entry.message}</div>
+</div>
+<script>
+var p = new Ext.form.FormPanel({
+	title: FR.T('Sent message (%1)').replace('%1', '{$app.entry.date}'),
+	tabClosable: true, autoScroll: true, cls: 'FREditForm',
+	html: Ext.get('logData').dom.innerHTML
+});
+Ext.getCmp('gridTabPanel').add(p);
+p.show();
+</script>

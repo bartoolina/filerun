@@ -1,0 +1,10 @@
+<script>
+FR = {
+	path: '{$app.path|forHTML|safeJS}',
+	popupId: '{$app.popupId}',
+	UI: { translations: [] },
+	usersInfo: {$app.usersInfo}
+};
+</script>
+<script src="?module=fileman&section=utils&v={$app.settings.currentVersion|forURL}&sec=File%20Control%20Panel%3A%20Users&lang={$app.language|forURL}&page=translation.js"></script>
+<script src="js/min/fileman/file_cpanel/users.js?v={$app.settings.currentVersion|forURL}"></script>

@@ -1,0 +1,27 @@
+{lang section="OAuth2"}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{$app.settings.app_title|safeHTML}</title>
+	{insertFavIconLink absoluteURLs=1}
+	{insertCSSLink basic=1 oauth2=1 absoluteURLs=1}
+</head>
+<body>
+
+
+<div class="container" style="margin-bottom:10%">
+	<div class="row">
+		<div style="text-align:center">
+			<h2>Success!</h2>
+			<br><br>
+			{t}The Nextcloud application will automatically connect shortly!{/t}
+			<br>
+			{t}You can now close this tab.{/t}
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

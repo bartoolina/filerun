@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="application-name" content="FileRun">
+	<title>{$app.fileInfo.name|safeHTML}{if $app.isFree} - shared with FileRun{/if}</title>
+	{insertFavIconLink absoluteURLs=1}
+	{insertCSSLink basic=1 weblink="preview" absoluteURLs=1}
+</head>
+<body style="display:flex;justify-content:center;align-items:center;">
+
+<div style="text-align:center">
+	<div style="margin-top:10px">{t}No preview available{/t}</div>
+</div>

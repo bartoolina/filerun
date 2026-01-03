@@ -1,0 +1,23 @@
+{lang section="OAuth2"}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$app.settings.app_title|safeHTML} :: {t}Maintenance{/t}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	{insertFavIconLink absoluteURLs=1}
+	{insertCSSLink basic=1 oauth2=1 absoluteURLs=1}
+</head>
+<body>
+
+<div class="container" style="margin-bottom:10%">
+	<div class="row" style="text-align:center;margin-bottom:1em;">
+		<h2>{t}Maintenance{/t}</h2>
+	</div>
+	<div class="row" style="text-align:center;margin-bottom:1em;">
+		{$app.message}
+	</div>
+</div>
+
+</body>
+</html>

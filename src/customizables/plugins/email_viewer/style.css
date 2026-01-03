@@ -1,0 +1,17 @@
+body {
+  background-color: white;
+  max-width: 790px;
+  margin: 0 auto;
+  padding: 15px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  color: #333;
+  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+}
+div.headers {
+  border:1px solid silver;
+  max-height:100px;
+  overflow:auto;
+  padding:20px;
+  margin:20px 0;
+}

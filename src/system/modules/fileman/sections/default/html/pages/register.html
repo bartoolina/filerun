@@ -1,0 +1,48 @@
+{lang section="User Registration"}<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>{$app.settings.app_title|forHTML} - {t}User Registration{/t}</title>
+<meta name="application-name" content="FileRun">
+{insertFavIconLink}
+{insertCSSLink basic=1 ext=1 login=1}
+<style>
+	{if $app.ui_bg}
+	body {
+		background-image:url({$app.settings.ui_login_bg|forHTML});
+		background-color: silver;
+	}
+	{else if $app.ui_bg_color}
+	body {
+		background-color: {$app.ui_bg_color|safeHTML};
+	}
+	{/if}
+</style>
+</head>
+<body id="theBODY">
+<div id="loadMsg"><div>{t}Loading...{/t}</div></div>
+{insertJSScript scripts=['ext', 'register']}
+<script src="?module=fileman&section=utils&sec=User%20Registration&lang={$app.language|forURL}&v={$app.settings.currentVersion|forURL}&page=translation.js"></script>
+<script>
+var URLRoot = '{$app.url.root}';
+var Settings = {
+	title: '{$app.settings.app_title|safeJS}',
+	ui_bg: '{$app.ui_bg}',
+	enableCaptcha: {if $app.settings.captcha}true{else}false{/if},
+    recaptcha_site_key: '{$app.settings.recaptcha_site_key}'
+};
+var generatePass = {if $app.settings.user_registration_generate_passwords}true{else}false{/if};
+var redirect_url_success = '{$app.url.root}';
+var redirect_url_error = '{$app.url.root}/?module=fileman&page=register';
+var signUpURL = '{$app.url.root}/?module=fileman&page=register{if $app.get.puid}&puid={$app.get.puid|safeHTML|safeJS}{/if}&action=submit&ajax=true';
+</script>
+
+{if $app.settings.captcha}
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadGRCCallback&render=explicit" async defer></script>
+{/if}
+
+{include file="customizables/include.html" page="register"}
+{if $app.settings.tracker_codes}{$app.settings.tracker_codes}{/if}
+</body>
+</html>

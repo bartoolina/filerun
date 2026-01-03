@@ -1,0 +1,10 @@
+<link rel="stylesheet" href="js/min/jquery/croppie/croppie.css?v={$app.settings.currentVersion|forURL}" />
+{insertJSScript scripts=['user_settings', 'flow', 'jquery', 'croppie']}
+<script src="?module=fileman&section=utils&sec=Account%20Settings&lang={$app.language|forURL}&v={$app.settings.currentVersion|forURL}&page=translation.js"></script>
+<script>
+	FR.system = {$app.system_json};
+	FR.userInfo = {$app.userInfo};
+	{if $app.system.showApps}
+	FR.apps = {$app.connectedApps};
+	{/if}
+</script>

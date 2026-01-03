@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteRule ^rw/([^/]+)/([^/]+)/(.*)/download$ index.php?opts=$1&&filename=$2&path=$3&fmode=open
+RewriteRule ^rw/([^/]+)/([^/]+)/download$ index.php?opts=$1&filename=$2&fmode=open
+RewriteRule ^rw/([^/]+)/([^/]+)/(.*)$ index.php?opts=$1&filename=$2&path=$3&fmode=open
+RewriteRule ^rw/([^/]+)/([^/]+)$ index.php?opts=$1&filename=$2&fmode=open
+RewriteRule ^rw/([^/]+)$ index.php?opts=$1&fmode=open
+</IfModule>

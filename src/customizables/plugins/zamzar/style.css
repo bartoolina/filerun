@@ -1,0 +1,17 @@
+.selectFormat {
+	padding-bottom: 20px;
+}
+.format {
+	float: left;
+	min-width: 80px;
+	margin:10px;
+	transition: background-color 0.3s ease;
+	border: 1px solid var(--hBCol);
+}
+.format:hover {
+	background-color: var(--theme-menu-highlight);
+	cursor: pointer;
+}
+#status {
+	padding:10px;
+}
