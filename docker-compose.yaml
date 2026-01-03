@@ -1,7 +1,8 @@
 services:
   db:
     image: lscr.io/linuxserver/mariadb:11.4.8
-    container_name: mariadb
+    container_name: filerun-db
+    restart: unless-stopped
     environment:
       PUID: 1000
       PGID: 1000
@@ -12,12 +13,11 @@ services:
       MYSQL_PASSWORD: filerun-user-password
     volumes:
       - ./db:/config
-    restart: unless-stopped
 
   web:
     build: .
-    container_name: filerun_web
-    restart: always
+    container_name: filerun-web
+    restart: unless-stopped
     environment:
       FR_DB_HOST: db
       FR_DB_PORT: 3306
