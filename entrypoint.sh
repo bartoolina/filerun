@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e
 
-# Pobierz aktualny UID/GID dla www-data
+# Get the current UID/GID for www-data
 CURRENT_UID=$(id -u www-data)
 CURRENT_GID=$(id -g www-data)
 
-# Sprawdź, czy PUID/PGID są ustawione i czy różnią się od obecnych
+# Check if PUID/PGID are set and if they differ from the current ones
 if [ -n "$PUID" ] && [ "$PUID" != "$CURRENT_UID" ]; then
-    echo ">>>> Zmiana UID dla www-data na: $PUID"
-    # Zmień GID grupy, jeśli ma ten sam numer co stary UID
+    echo ">>>> Changing UID for www-data to: $PUID"
+    # Change the group GID if it has the same number as the old UID
     if [ "$CURRENT_UID" = "$CURRENT_GID" ]; then
         groupmod -o -g "$PUID" www-data
     fi
@@ -16,11 +16,11 @@ if [ -n "$PUID" ] && [ "$PUID" != "$CURRENT_UID" ]; then
 fi
 
 if [ -n "$PGID" ] && [ "$PGID" != "$CURRENT_GID" ]; then
-    echo ">>>> Zmiana GID dla www-data na: $PGID"
+    echo ">>>> Changing GID for www-data to: $PGID"
     groupmod -o -g "$PGID" www-data
 fi
 
-# Generuj certyfikat SSL, jeśli nie istnieje
+# Generate SSL certificate if it doesn't exist
 if [ ! -f /config/keys/cert.key ] || [ ! -f /config/keys/cert.crt ]; then
     echo ">>>> Generating self-signed certificate"
     mkdir -p /config/keys
@@ -29,7 +29,7 @@ if [ ! -f /config/keys/cert.key ] || [ ! -f /config/keys/cert.crt ]; then
         -subj "/C=US/ST=State/L=City/O=Organization/OU=Department/CN=example.com"
 fi
 
-# Zmień właściciela plików na użytkownika 'www-data' (z nowym UID/GID)
+# Change file owner to 'www-data' user (with the new UID/GID)
 echo ">>>> Setting ownership to www-data..."
 chown -R www-data:www-data /var/www/html /config /user-files
 
@@ -37,5 +37,5 @@ echo ">>>> Setting correct permissions..."
 chmod -R g+w /var/www/html/system/data
 
 echo ">>>> Starting services..."
-# Uruchom oryginalne polecenie CMD
+# Execute the original CMD
 exec "$@"
