@@ -1,0 +1,44 @@
+version: "3.8"
+
+
+services:
+  db:
+    image: mariadb:10.5
+    container_name: filerun_mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: YOUR_DATABASE_ROOT_PASSWORD
+      MYSQL_USER: filerun-user
+      MYSQL_PASSWORD: YOUR_DATABASE_USER_PASSWORD
+      MYSQL_DATABASE: filerun-db
+    volumes:
+      - ./db:/var/lib/mysql
+
+  web:
+    build: .
+    container_name: filerun_web
+    restart: always
+    environment:
+      FR_DB_HOST: db
+      FR_DB_PORT: 3306
+      FR_DB_NAME: filerun-db
+      FR_DB_USER: filerun-user
+      FR_DB_PASS: YOUR_DATABASE_USER_PASSWORD
+      PUID: 1000
+      PGID: 1000
+    depends_on:
+      - db
+    ports:
+      - 5003:80
+    volumes:
+      - ./user-files:/user-files
+      - ./config:/config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  default:
+    driver: bridge
