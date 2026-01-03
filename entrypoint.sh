@@ -20,15 +20,6 @@ if [ -n "$PGID" ] && [ "$PGID" != "$CURRENT_GID" ]; then
     groupmod -o -g "$PGID" www-data
 fi
 
-# Generate SSL certificate if it doesn't exist
-if [ ! -f /config/keys/cert.key ] || [ ! -f /config/keys/cert.crt ]; then
-    echo ">>>> Generating self-signed certificate"
-    mkdir -p /config/keys
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-        -keyout /config/keys/cert.key -out /config/keys/cert.crt \
-        -subj "/C=US/ST=State/L=City/O=Organization/OU=Department/CN=example.com"
-fi
-
 # Change file owner to 'www-data' user (with the new UID/GID)
 echo ">>>> Setting ownership to www-data..."
 chown -R www-data:www-data /var/www/html /config /user-files
