@@ -7,6 +7,8 @@ server {
 
 	server_name _;
 
+	client_max_body_size 8G;
+
 	ssl_certificate /config/keys/cert.crt;
 	ssl_certificate_key /config/keys/cert.key;
 
