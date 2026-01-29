@@ -12,14 +12,29 @@ server {
 		try_files $uri $uri/ /index.php$is_args$args;
 	}
 
-	location ~ \.php$ {
+	# Corrected PHP handling for WebDAV
+	location ~ [^/]\.php(/|$) {
+		fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+		if (!-f $document_root$fastcgi_script_name) {
+			return 404;
+		}
+
 		include snippets/fastcgi-php.conf;
 
-		fastcgi_pass 127.0.0.1:9000;	# With php7.4-cgi alone:
-		# fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;	# With php7.4-fpm:
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    	fastcgi_param PATH_INFO $fastcgi_path_info;
+		fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+	}
+
+	# A long browser cache lifetime can speed up repeat visits to your page
+	location ~* \.(jpg|jpeg|gif|png|webp|svg|woff|woff2|ttf|css|js|ico|xml)$ {
+		access_log        off;
+		log_not_found     off;
+		expires           360d;
 	}
 
 	location ~ /\. {
         deny all;
     }
 }
+

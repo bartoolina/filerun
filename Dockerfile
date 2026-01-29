@@ -40,7 +40,13 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ffmpeg \
         mariadb-client \
-        libmagickwand-6.q16-6 && \
+        libmagickwand-6.q16-6 \
+        php7.4-mysql \
+        php7.4-xml \
+        php7.4-zip \
+        php7.4-gd \
+        php7.4-curl \
+        php7.4-ldap && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy compiled extensions from the "builder" stage
