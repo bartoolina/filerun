@@ -25,7 +25,7 @@ echo ">>>> Setting ownership to www-data..."
 chown -R www-data:www-data /var/www/html /config /user-files
 
 echo ">>>> Setting correct permissions..."
-chmod -R g+w /var/www/html/system/data
+chmod -R 775 /var/www/html/system/data
 
 echo ">>>> Starting services..."
 # Execute the original CMD

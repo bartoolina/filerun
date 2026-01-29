@@ -18,12 +18,14 @@ server {
 		if (!-f $document_root$fastcgi_script_name) {
 			return 404;
 		}
-
-		include snippets/fastcgi-php.conf;
+		
+		# This caused login issues with the Nextcloud client
+		# include snippets/fastcgi-php.conf;
+		include fastcgi_params;
 
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     	fastcgi_param PATH_INFO $fastcgi_path_info;
-		fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+		fastcgi_pass 127.0.0.1:9000;
 	}
 
 	# A long browser cache lifetime can speed up repeat visits to your page
